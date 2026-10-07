@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Finanças</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtf96MCR-I92qoXQxd8YFqWKoE31bevgg",
+            authDomain: "casa-financas-a6cc5.firebaseapp.com",
+            projectId: "casa-financas-a6cc5",
+            storageBucket: "casa-financas-a6cc5.firebasestorage.app",
+            messagingSenderId: "878233002609",
+            appId: "1:878233002609:web:5b33af9880d0db27e6b1d0"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            window.firebaseAuth = getAuth(app);
+            window.firebaseDb = getFirestore(app);
+            window.signInAnonymously = signInAnonymously;
+            window.onAuthStateChanged = onAuthStateChanged;
+            window.doc = doc;
+            window.setDoc = setDoc;
+            window.onSnapshot = onSnapshot;
+
+            window.dispatchEvent(new Event('firebase-ready'));
+        } catch (err) {
+            console.error("Erro ao inicializar Firebase:", err);
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased overflow-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useContext, createContext, useMemo } = React;
+
+        const IconPaths = {
+            Home: <><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>,
+            List: <><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></>,
+            CreditCardIcon: <><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></>,
+            Target: <><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></>,
+            ArrowRightLeft: <><line x1="16" y1="3" x2="20" y2="7"/><line x1="20" y1="7" x2="16" y2="11"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="8" y1="21" x2="4" y2="17"/><line x1="4" y1="17" x2="8" y2="13"/><line x1="20" y1="17" x2="4" y2="17"/></>,
+            Settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></>,
+            Eye: <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>,
+            EyeOff: <><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></>,
+            PlusCircle: <><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></>,
+            Download: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></>,
+            Upload: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></>,
+            Trash2: <><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></>,
+            ArrowUpCircle: <><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></>,
+            ArrowDownCircle: <><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></>,
+            X: <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
+            ChevronLeft: <><polyline points="15 18 9 12 15 6"/></>,
+            ChevronRight: <><polyline points="9 18 15 12 9 6"/></>
+        };
+
+        const Icon = ({ name, className }) => (
+            <svg className={className || "w-5 h-5"} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                {IconPaths[name] || IconPaths.Home}
+            </svg>
+        );
+
+        const formatMoney = (cents) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cents / 100);
+        const parseMoney = (str) => {
+            const numericStr = str.replace(/[^\d]/g, '');
+            return numericStr ? parseInt(numericStr, 10) : 0;
+        };
+        const calculateInstallments = (totalAmount, installments) => {
+            const baseAmount = Math.floor(totalAmount / installments);
+            let remainder = totalAmount % installments;
+            return Array.from({ length: installments }, () => {
+                let amount = baseAmount;
+                if (remainder > 0) { amount += 1; remainder -= 1; }
+                return amount;
+            });
+        };
+        const getMonthRef = (dateStr) => {
+            const d = new Date(dateStr);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        };
+
+        const Card = ({ children, className = "" }) => (
+            <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 ${className}`}>{children}</div>
+        );
+
+        const Button = ({ children, variant = 'primary', className = "", ...props }) => {
+            const baseStyle = "inline-flex items-center justify-center font-medium transition-colors rounded-xl focus:outline-none disabled:opacity-50";
+            const variants = {
+                primary: "bg-[#820AD1] hover:bg-[#6808a8] text-white shadow-sm h-11 px-6",
+                secondary: "bg-slate-100 hover:bg-slate-200 text-slate-800 h-11 px-6",
+                outline: "border-2 border-slate-200 hover:border-slate-300 bg-transparent text-slate-700 h-11 px-6",
+            };
+            return <button className={`${baseStyle} ${variants[variant] || variants.primary} ${className}`} {...props}>{children}</button>;
+        };
+
+        const Input = ({ className = "", ...props }) => (
+            <input className={`flex h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#820AD1] ${className}`} {...props} />
+        );
+
+        const Label = ({ children, ...props }) => (
+            <label className="text-sm font-medium leading-none text-slate-700" {...props}>{children}</label>
+        );
+
+        const MoneyInput = ({ valueCents, onChange, label }) => {
+            const displayValue = useMemo(() => valueCents === 0 ? '' : (valueCents / 100).toFixed(2).replace('.', ','), [valueCents]);
+            return (
+                <div className="space-y-2">
+                    {label && <Label>{label}</Label>}
+                    <div className="relative">
+                        <span className="absolute left-3 top-2.5 text-slate-500 font-medium">R$</span>
+                        <Input type="text" inputMode="numeric" className="pl-10 text-lg tabular-nums font-semibold" value={displayValue} onChange={e => onChange(parseMoney(e.target.value))} placeholder="0,00" />
+                    </div>
+                </div>
+            );
+        };
+
+        const initialState = {
+            household: null,
+            members: [],
+            accounts: [],
+            cards: [],
+            categories: [
+                { id: 'cat-1', name: 'Moradia' },
+                { id: 'cat-2', name: 'Alimentação' },
+                { id: 'cat-3', name: 'Transporte' },
+                { id: 'cat-4', name: 'Lazer' },
+                { id: 'cat-sal', name: 'Salário' }
+            ],
+            transactions: [],
+            budgets: [],
+            privacyMode: false,
+        };
+
+        const AuthContext = createContext(null);
+        const useAuth = () => useContext(AuthContext);
+
+        const AuthProvider = ({ children }) => {
+            const [state, setState] = useState(initialState);
+            const [firebaseUser, setFirebaseUser] = useState(null);
+
+            useEffect(() => {
+                if (window.firebaseAuth && window.signInAnonymously) {
+                    window.signInAnonymously(window.firebaseAuth).catch(console.error);
+                    const unsub = window.onAuthStateChanged(window.firebaseAuth, (user) => setFirebaseUser(user));
+                    return () => unsub();
+                }
+            }, []);
+
+            useEffect(() => {
+                if (!firebaseUser || !window.firebaseDb) return;
+                const docRef = window.doc(window.firebaseDb, 'artifacts', 'casa-financas-oficial', 'users', firebaseUser.uid, 'appData', 'state');
+                const unsubscribe = window.onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        setState(prev => ({ ...prev, ...docSnap.data() }));
+                    } else {
+                        window.setDoc(docRef, initialState).catch(console.error);
+                    }
+                }, console.error);
+                return () => unsubscribe();
+            }, [firebaseUser]);
+
+            const updateState = (updater) => {
+                setState(prev => {
+                    const newState = updater(prev);
+                    if (firebaseUser && window.firebaseDb) {
+                        const docRef = window.doc(window.firebaseDb, 'artifacts', 'casa-financas-oficial', 'users', firebaseUser.uid, 'appData', 'state');
+                        window.setDoc(docRef, newState).catch(console.error);
+                    }
+                    return newState;
+                });
+            };
+
+            const actions = {
+                login: (email) => new Promise(resolve => {
+                    setTimeout(() => {
+                        updateState(prev => ({
+                            ...prev,
+                            members: [{ id: 'm1', name: email.split('@')[0], color: '#820AD1', role: 'owner' }]
+                        }));
+                        resolve();
+                    }, 400);
+                }),
+                logout: () => updateState(() => initialState),
+                togglePrivacy: () => updateState(prev => ({ ...prev, privacyMode: !prev.privacyMode })),
+                createHousehold: (name) => new Promise(resolve => {
+                    setTimeout(() => {
+                        updateState(prev => ({
+                            ...prev,
+                            household: { id: 'h1', name, created_at: new Date().toISOString() },
+                            members: [...prev.members, { id: 'm2', name: 'Parceiro(a)', color: '#F59E0B', role: 'member' }]
+                        }));
+                        resolve();
+                    }, 400);
+                }),
+                addAccount: (acc) => updateState(prev => ({ ...prev, accounts: [...prev.accounts, { ...acc, id: `acc-${Date.now()}` }] })),
+                addCard: (card) => updateState(prev => ({ ...prev, cards: [...prev.cards, { ...card, id: `card-${Date.now()}` }] })),
+                addTransaction: (tx, installments = 1) => {
+                    updateState(prev => {
+                        let newTransactions = [...prev.transactions];
+                        if (installments > 1 && tx.credit_card_id) {
+                            const group = `inst-${Date.now()}`;
+                            const parts = calculateInstallments(tx.amount, installments);
+                            parts.forEach((partAmount, i) => {
+                                const compDate = new Date(tx.competence_date);
+                                compDate.setMonth(compDate.getMonth() + i);
+                                newTransactions.push({ ...tx, id: `tx-${Date.now()}-${i}`, amount: partAmount, competence_date: compDate.toISOString(), installment_group_id: group, installment_number: i + 1 });
+                            });
+                        } else {
+                            newTransactions.push({ ...tx, id: `tx-${Date.now()}` });
+                        }
+                        return { ...prev, transactions: newTransactions };
+                    });
+                },
+                addCategory: (name) => updateState(prev => ({ ...prev, categories: [...prev.categories, { id: `cat-${Date.now()}`, name }] })),
+                clearData: () => updateState(prev => ({ ...prev, accounts: [], cards: [], transactions: [], budgets: [] }))
+            };
+
+            return <AuthContext.Provider value={{ state, ...actions }}>{children}</AuthContext.Provider>;
+        };
+
+        const DashboardView = ({ currentMonth, onChangeMonth }) => {
+            const { state } = useAuth();
+            const [filterMember, setFilterMember] = useState('all');
+            const monthRef = getMonthRef(currentMonth);
+            const monthTx = state.transactions.filter(t => t.competence_date.startsWith(monthRef) && t.type !== 'PAYMENT');
+            const filteredTx = filterMember === 'all' ? monthTx : monthTx.filter(t => t.member_id === filterMember);
+
+            const totalIncomes = filteredTx.filter(t => t.type === 'INCOME').reduce((acc, t) => acc + t.amount, 0);
+            const totalExpenses = filteredTx.filter(t => t.type === 'EXPENSE').reduce((acc, t) => acc + t.amount, 0);
+            const balance = state.accounts.reduce((acc, account) => acc + (account.initial_balance || 0), 0);
+            const pv = state.privacyMode;
+
+            return (
+                <div className="max-w-4xl mx-auto space-y-6 pb-24 animate-in fade-in">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+                        <div className="flex items-center space-x-4 bg-white p-2 rounded-xl border border-slate-200 shadow-sm self-start">
+                            <button onClick={() => { const d = new Date(currentMonth); d.setMonth(d.getMonth() - 1); onChangeMonth(d); }} className="p-2 hover:bg-slate-100 rounded-lg"><Icon name="ChevronLeft" /></button>
+                            <span className="font-semibold text-slate-800 w-32 text-center capitalize">{currentMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
+                            <button onClick={() => { const d = new Date(currentMonth); d.setMonth(d.getMonth() + 1); onChangeMonth(d); }} className="p-2 hover:bg-slate-100 rounded-lg"><Icon name="ChevronRight" /></button>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="p-5 flex flex-col justify-between h-36 bg-gradient-to-br from-[#820AD1] to-[#6808a8] border-none text-white">
+                            <div className="text-white/80 text-sm font-medium">Saldo Atual</div>
+                            <div className="text-3xl font-bold tabular-nums">{pv ? '••••' : formatMoney(balance)}</div>
+                        </Card>
+                        <Card className="p-5 flex flex-col justify-between h-36">
+                            <div className="flex items-center text-slate-500 text-sm font-medium"><Icon name="ArrowUpCircle" className="w-4 h-4 mr-1 text-green-500"/> Receitas do Mês</div>
+                            <div className="text-2xl font-bold text-slate-800 tabular-nums">{pv ? '••••' : formatMoney(totalIncomes)}</div>
+                        </Card>
+                        <Card className="p-5 flex flex-col justify-between h-36">
+                            <div className="flex items-center text-slate-500 text-sm font-medium"><Icon name="ArrowDownCircle" className="w-4 h-4 mr-1 text-red-500"/> Despesas do Mês</div>
+                            <div className="text-2xl font-bold text-slate-800 tabular-nums">{pv ? '••••' : formatMoney(totalExpenses)}</div>
+                        </Card>
+                    </div>
+                </div>
+            );
+        };
+
+        const AccountsView = () => {
+            const { state, addAccount } = useAuth();
+            const [isAdding, setIsAdding] = useState(false);
+            const [newAcc, setNewAcc] = useState({ name: '', initial_balance: 0 });
+            return (
+                <div className="max-w-4xl mx-auto space-y-6 pb-24 animate-in fade-in">
+                    <div className="flex justify-between items-center px-2">
+                        <h1 className="text-2xl font-bold text-slate-900">Contas</h1>
+                        <Button onClick={() => setIsAdding(!isAdding)} variant="outline"><Icon name="PlusCircle" className="w-5 h-5 mr-2"/> Nova Conta</Button>
+                    </div>
+                    {isAdding && (
+                        <Card className="p-6">
+                            <form onSubmit={e => { e.preventDefault(); addAccount(newAcc); setIsAdding(false); setNewAcc({name:'', initial_balance:0}); }} className="space-y-4">
+                                <div><Label>Nome do Banco</Label><Input required value={newAcc.name} onChange={e => setNewAcc({...newAcc, name: e.target.value})} placeholder="Ex: Nubank" /></div>
+                                <MoneyInput label="Saldo Inicial" valueCents={newAcc.initial_balance} onChange={v => setNewAcc({...newAcc, initial_balance: v})} />
+                                <Button type="submit" className="w-full">Salvar</Button>
+                            </form>
+                        </Card>
+                    )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {state.accounts.map(acc => (
+                            <Card key={acc.id} className="p-5 flex items-center justify-between">
+                                <span className="font-semibold">{acc.name}</span>
+                                <span className="font-bold">{state.privacyMode ? '••••' : formatMoney(acc.initial_balance)}</span>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const SettingsView = () => {
+            const { clearData } = useAuth();
+            return (
+                <div className="max-w-4xl mx-auto space-y-6 pb-24 animate-in fade-in">
+                    <h1 className="text-2xl font-bold px-2">Ajustes</h1>
+                    <Card className="p-6">
+                        <Button onClick={() => { if(confirm('Apagar tudo?')) clearData(); }} className="bg-red-50 text-red-600 w-full hover:bg-red-100">Apagar Dados</Button>
+                    </Card>
+                </div>
+            );
+        };
+
+        const AppRoot = () => {
+            const { state, login, createHousehold, logout, togglePrivacy } = useAuth();
+            const [email, setEmail] = useState('');
+            const [houseName, setHouseName] = useState('');
+            const [activeTab, setActiveTab] = useState('inicio');
+            const [currentMonth, setCurrentMonth] = useState(new Date());
+
+            if (!state.members.length) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+                        <Card className="w-full max-w-sm p-8 space-y-6">
+                            <h1 className="text-2xl font-bold text-center">Casa Finanças</h1>
+                            <form onSubmit={e => { e.preventDefault(); login(email); }} className="space-y-4">
+                                <Input type="email" placeholder="Seu e-mail" required value={email} onChange={e => setEmail(e.target.value)} />
+                                <Button type="submit" className="w-full">Entrar</Button>
+                            </form>
+                        </Card>
+                    </div>
+                );
+            }
+
+            if (!state.household) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+                        <Card className="w-full max-w-sm p-8 space-y-6">
+                            <h1 className="text-2xl font-bold text-center">Criar Casa</h1>
+                            <form onSubmit={e => { e.preventDefault(); createHousehold(houseName); }} className="space-y-4">
+                                <Input placeholder="Nome da Casa" required value={houseName} onChange={e => setHouseName(e.target.value)} />
+                                <Button type="submit" className="w-full">Começar</Button>
+                            </form>
+                        </Card>
+                    </div>
+                );
+            }
+
+            const tabs = [
+                { id: 'inicio', icon: 'Home', label: 'Início' },
+                { id: 'contas', icon: 'List', label: 'Contas' },
+                { id: 'ajustes', icon: 'Settings', label: 'Ajustes' },
+            ];
+
+            return (
+                <div className="flex h-screen bg-slate-50 flex-col md:flex-row">
+                    <aside className="hidden md:flex w-64 bg-white border-r border-slate-100 flex-col p-4">
+                        <span className="font-bold text-lg mb-10 px-2 pt-2">{state.household.name}</span>
+                        <nav className="flex-1 space-y-2">
+                            {tabs.map(item => (
+                                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl ${activeTab === item.id ? 'bg-purple-50 text-[#820AD1]' : 'text-slate-600'}`}>
+                                    <Icon name={item.icon} /><span>{item.label}</span>
+                                </button>
+                            ))}
+                        </nav>
+                    </aside>
+                    <main className="flex-1 flex flex-col h-screen overflow-hidden">
+                        <header className="bg-white px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                            <span className="font-bold">{state.household.name}</span>
+                            <div className="flex items-center space-x-4">
+                                <button onClick={togglePrivacy} className="p-2 hover:bg-slate-100 rounded-full"><Icon name={state.privacyMode ? 'EyeOff' : 'Eye'} /></button>
+                                <button onClick={logout} className="text-sm font-medium text-slate-500">Sair</button>
+                            </div>
+                        </header>
+                        <div className="flex-1 overflow-y-auto p-4 md:p-8">
+                            {activeTab === 'inicio' && <DashboardView currentMonth={currentMonth} onChangeMonth={setCurrentMonth} />}
+                            {activeTab === 'contas' && <AccountsView />}
+                            {activeTab === 'ajustes' && <SettingsView />}
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const App = () => <AuthProvider><AppRoot /></AuthProvider>;
+
+        window.addEventListener('firebase-ready', () => {
+            ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+        });
+    </script>
+</body>
+</html>
