@@ -3,17 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casa Finanças</title>
+    <title>Casa Finanças — Gestão de Casal</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nu: {
+                            50: '#f4e9fc',
+                            100: '#e5ccf9',
+                            500: '#820AD1',
+                            600: '#6808a8',
+                            700: '#520684'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- React 18 & ReactDOM UMD -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
     <!-- Babel Standalone -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <!-- Firebase SDK UMD / Modules -->
     <script type="module">
@@ -45,19 +68,27 @@
                 window.firebaseReady = true;
                 window.dispatchEvent(new Event('firebase-ready'));
             } catch (err) {
-                console.warn("Modo offline ativado devido a restrições de rede:", err);
+                console.warn("Modo offline ativado:", err);
                 window.firebaseReady = false;
                 window.dispatchEvent(new Event('firebase-ready'));
             }
         };
         window.initFirebase();
     </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.25s ease-out forwards; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased overflow-hidden">
+<body class="antialiased overflow-x-hidden">
     <div id="root">
-        <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; color: #820AD1; background: #f8fafc;">
-            Carregando Casa Finanças...
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; color: #820AD1; background: #f8fafc; gap: 12px;">
+            <div style="width: 40px; height: 40px; border: 4px solid #e5ccf9; border-top: 4px solid #820AD1; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <span style="font-weight: 600; font-size: 15px;">Carregando Casa Finanças Pro...</span>
         </div>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
     </div>
 
     <script type="text/babel">
@@ -66,7 +97,7 @@
         const IconPaths = {
             Home: <><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>,
             List: <><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></>,
-            CreditCardIcon: <><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></>,
+            CreditCard: <><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></>,
             Target: <><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></>,
             ArrowRightLeft: <><line x1="16" y1="3" x2="20" y2="7"/><line x1="20" y1="7" x2="16" y2="11"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="8" y1="21" x2="4" y2="17"/><line x1="4" y1="17" x2="8" y2="13"/><line x1="20" y1="17" x2="4" y2="17"/></>,
             Settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></>,
@@ -76,9 +107,10 @@
             Download: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></>,
             Upload: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></>,
             Trash2: <><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></>,
-            ChevronLeft: <><polyline points="15 18 9 12 15 6"/></>,
-            ChevronRight: <><polyline points="9 18 15 12 9 6"/></>,
-            X: <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+            X: <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
+            TrendingUp: <><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>,
+            TrendingDown: <><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></>,
+            Wallet: <><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></>
         };
 
         const Icon = ({ name, className }) => (
@@ -94,35 +126,35 @@
         };
 
         const Card = ({ children, className = "" }) => (
-            <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 ${className}`}>{children}</div>
+            <div className={`bg-white rounded-2xl shadow-sm border border-slate-100/80 transition-all hover:shadow-md ${className}`}>{children}</div>
         );
 
         const Button = ({ children, variant = 'primary', className = "", ...props }) => {
-            const baseStyle = "inline-flex items-center justify-center font-medium transition-colors rounded-xl focus:outline-none disabled:opacity-50 cursor-pointer";
+            const baseStyle = "inline-flex items-center justify-center font-semibold transition-all rounded-xl focus:outline-none disabled:opacity-50 cursor-pointer text-sm shadow-sm active:scale-[0.98]";
             const variants = {
-                primary: "bg-[#820AD1] hover:bg-[#6808a8] text-white shadow-sm h-11 px-6",
+                primary: "bg-nu-500 hover:bg-nu-600 text-white h-11 px-6 shadow-nu-500/20 shadow-lg",
                 secondary: "bg-slate-100 hover:bg-slate-200 text-slate-800 h-11 px-6",
-                outline: "border-2 border-slate-200 hover:border-slate-300 bg-transparent text-slate-700 h-11 px-6",
+                outline: "border-2 border-slate-200 hover:border-nu-500 hover:text-nu-500 bg-transparent text-slate-700 h-11 px-6",
             };
             return <button className={`${baseStyle} ${variants[variant] || variants.primary} ${className}`} {...props}>{children}</button>;
         };
 
         const Input = ({ className = "", ...props }) => (
-            <input className={`flex h-11 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#820AD1] ${className}`} {...props} />
+            <input className={`flex h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-nu-500 focus:bg-white transition-all ${className}`} {...props} />
         );
 
         const Label = ({ children, ...props }) => (
-            <label className="text-sm font-medium leading-none text-slate-700" {...props}>{children}</label>
+            <label className="text-xs font-semibold tracking-wider text-slate-500 uppercase mb-1.5 block" {...props}>{children}</label>
         );
 
         const MoneyInput = ({ valueCents, onChange, label }) => {
             const displayValue = useMemo(() => valueCents === 0 ? '' : (valueCents / 100).toFixed(2).replace('.', ','), [valueCents]);
             return (
-                <div className="space-y-2">
+                <div className="space-y-1">
                     {label && <Label>{label}</Label>}
                     <div className="relative">
-                        <span className="absolute left-3 top-2.5 text-slate-500 font-medium">R$</span>
-                        <Input type="text" inputMode="numeric" className="pl-10 text-lg tabular-nums font-semibold" value={displayValue} onChange={e => onChange(parseMoney(e.target.value))} placeholder="0,00" />
+                        <span className="absolute left-4 top-3 text-slate-400 font-semibold text-sm">R$</span>
+                        <Input type="text" inputMode="numeric" className="pl-11 text-lg tabular-nums font-bold text-nu-500" value={displayValue} onChange={e => onChange(parseMoney(e.target.value))} placeholder="0,00" />
                     </div>
                 </div>
             );
@@ -141,6 +173,7 @@
                 { id: 'cat-sal', name: 'Salário' }
             ],
             transactions: [],
+            budgets: [],
             privacyMode: false,
         };
 
@@ -149,7 +182,7 @@
 
         const AuthProvider = ({ children }) => {
             const [state, setState] = useState(() => {
-                const saved = localStorage.getItem('casa_financas_state');
+                const saved = localStorage.getItem('casa_financas_pro_state');
                 if (saved) {
                     try { return JSON.parse(saved); } catch(e) {}
                 }
@@ -160,14 +193,14 @@
                 const handleFirebaseReady = () => {
                     if (window.firebaseReady && window.firebaseDb) {
                         try {
-                            const docRef = window.doc(window.firebaseDb, 'artifacts', 'casa-financas-oficial', 'users', 'global_user', 'appData', 'state');
+                            const docRef = window.doc(window.firebaseDb, 'artifacts', 'casa-financas-pro', 'users', 'global_user', 'appData', 'state');
                             window.onSnapshot(docRef, (docSnap) => {
                                 if (docSnap.exists()) {
                                     setState(docSnap.data());
                                 }
                             });
                         } catch(e) {
-                            console.warn("Erro ao configurar sincronização Firebase:", e);
+                            console.warn("Firebase sync aviso:", e);
                         }
                     }
                 };
@@ -181,7 +214,7 @@
             }, []);
 
             useEffect(() => {
-                localStorage.setItem('casa_financas_state', JSON.stringify(state));
+                localStorage.setItem('casa_financas_pro_state', JSON.stringify(state));
             }, [state]);
 
             const updateState = (updater) => {
@@ -189,7 +222,7 @@
                     const newState = updater(prev);
                     if (window.firebaseReady && window.firebaseDb) {
                         try {
-                            const docRef = window.doc(window.firebaseDb, 'artifacts', 'casa-financas-oficial', 'users', 'global_user', 'appData', 'state');
+                            const docRef = window.doc(window.firebaseDb, 'artifacts', 'casa-financas-pro', 'users', 'global_user', 'appData', 'state');
                             window.setDoc(docRef, newState).catch(() => {});
                         } catch(e) {}
                     }
@@ -201,7 +234,10 @@
                 login: (email) => new Promise(resolve => {
                     updateState(prev => ({
                         ...prev,
-                        members: [{ id: 'm1', name: email.split('@')[0], color: '#820AD1', role: 'owner' }]
+                        members: [
+                            { id: 'm1', name: email.split('@')[0], color: '#820AD1', role: 'owner' },
+                            { id: 'm2', name: 'Parceiro(a)', color: '#F59E0B', role: 'member' }
+                        ]
                     }));
                     resolve();
                 }),
@@ -210,14 +246,18 @@
                 createHousehold: (name) => new Promise(resolve => {
                     updateState(prev => ({
                         ...prev,
-                        household: { id: 'h1', name, created_at: new Date().toISOString() },
-                        members: [...prev.members, { id: 'm2', name: 'Parceiro(a)', color: '#F59E0B', role: 'member' }]
+                        household: { id: 'h1', name, created_at: new Date().toISOString() }
                     }));
                     resolve();
                 }),
                 addAccount: (acc) => updateState(prev => ({ ...prev, accounts: [...prev.accounts, { ...acc, id: `acc-${Date.now()}` }] })),
                 addCard: (card) => updateState(prev => ({ ...prev, cards: [...prev.cards, { ...card, id: `card-${Date.now()}` }] })),
                 addTransaction: (tx) => updateState(prev => ({ ...prev, transactions: [...prev.transactions, { ...tx, id: `tx-${Date.now()}` }] })),
+                addCategory: (name) => updateState(prev => ({ ...prev, categories: [...prev.categories, { id: `cat-${Date.now()}`, name }] })),
+                setBudget: (categoryId, limit) => updateState(prev => {
+                    const filtered = prev.budgets.filter(b => b.category_id !== categoryId);
+                    return { ...prev, budgets: [...filtered, { id: `b-${Date.now()}`, category_id: categoryId, limit_amount: limit }] };
+                }),
                 clearData: () => updateState(() => initialState)
             };
 
@@ -226,32 +266,75 @@
 
         const DashboardView = () => {
             const { state } = useAuth();
-            const balance = state.accounts.reduce((acc, account) => acc + (account.initial_balance || 0), 0);
             const pv = state.privacyMode;
+            
+            const totalBalance = state.accounts.reduce((acc, a) => acc + (a.initial_balance || 0), 0);
+            const totalIncome = state.transactions.filter(t => t.type === 'INCOME').reduce((acc, t) => acc + t.amount, 0);
+            const totalExpense = state.transactions.filter(t => t.type === 'EXPENSE').reduce((acc, t) => acc + t.amount, 0);
 
             return (
-                <div className="max-w-4xl mx-auto space-y-6 pb-24 animate-in fade-in">
-                    <Card className="p-6 bg-gradient-to-br from-[#820AD1] to-[#6808a8] border-none text-white shadow-md">
-                        <div className="text-white/80 text-sm font-medium mb-1">Saldo Atual nas Contas</div>
-                        <div className="text-4xl font-extrabold tabular-nums">{pv ? '••••' : formatMoney(balance)}</div>
-                    </Card>
+                <div className="space-y-6 animate-fade pb-20">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Card className="p-6 bg-gradient-to-br from-nu-500 to-nu-700 text-white shadow-xl shadow-nu-500/10">
+                            <div className="text-white/80 text-xs font-semibold uppercase tracking-wider mb-2">Saldo Total nas Contas</div>
+                            <div className="text-3xl font-extrabold tabular-nums tracking-tight">{pv ? '••••' : formatMoney(totalBalance)}</div>
+                            <div className="mt-4 flex items-center space-x-2 text-xs text-white/95 bg-white/10 px-3 py-1.5 rounded-lg w-fit backdrop-blur-sm">
+                                <Icon name="Wallet" className="w-4 h-4 text-amber-300" />
+                                <span>{state.accounts.length} contas cadastradas</span>
+                            </div>
+                        </Card>
+                        
+                        <Card className="p-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Receitas do Mês</span>
+                                <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600"><Icon name="TrendingUp" className="w-4 h-4"/></div>
+                            </div>
+                            <div className="text-2xl font-bold text-slate-800 tabular-nums">{pv ? '••••' : formatMoney(totalIncome)}</div>
+                            <span className="text-xs text-emerald-600 font-medium mt-1 block">Entradas confirmadas</span>
+                        </Card>
 
-                    <div className="space-y-3">
-                        <h2 className="text-lg font-bold text-slate-800 px-1">Últimos Lançamentos</h2>
+                        <Card className="p-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Despesas do Mês</span>
+                                <div className="p-2 bg-rose-50 rounded-xl text-rose-600"><Icon name="TrendingDown" className="w-4 h-4"/></div>
+                            </div>
+                            <div className="text-2xl font-bold text-slate-800 tabular-nums">{pv ? '••••' : formatMoney(totalExpense)}</div>
+                            <span className="text-xs text-rose-600 font-medium mt-1 block">Gastos computados</span>
+                        </Card>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center px-1">
+                            <h2 className="text-lg font-bold text-slate-800">Lançamentos Recentes</h2>
+                            <span className="text-xs text-slate-400 font-medium">{state.transactions.length} registros</span>
+                        </div>
                         {state.transactions.length === 0 ? (
-                            <Card className="p-8 text-center text-slate-400">Nenhum lançamento registrado ainda. Use o botão flutuante (+) para começar.</Card>
+                            <Card className="p-12 text-center space-y-3">
+                                <div className="w-12 h-12 bg-nu-50 rounded-full flex items-center justify-center mx-auto text-nu-500">
+                                    <Icon name="PlusCircle" className="w-6 h-6" />
+                                </div>
+                                <div className="font-bold text-slate-700">Nenhum lançamento registrado</div>
+                                <p className="text-sm text-slate-400 max-w-sm mx-auto">Use o botão flutuante roxo (+) no canto inferior direito para adicionar sua primeira receita ou despesa.</p>
+                            </Card>
                         ) : (
-                            state.transactions.map(tx => (
-                                <Card key={tx.id} className="p-4 flex items-center justify-between">
-                                    <div>
-                                        <div className="font-semibold text-slate-800">{tx.description}</div>
-                                        <div className="text-xs text-slate-400">{new Date(tx.competence_date).toLocaleDateString('pt-BR')}</div>
-                                    </div>
-                                    <span className={`font-bold tabular-nums ${tx.type === 'INCOME' ? 'text-emerald-600' : 'text-slate-900'}`}>
-                                        {tx.type === 'INCOME' ? '+' : '-'} {pv ? '••••' : formatMoney(tx.amount)}
-                                    </span>
-                                </Card>
-                            ))
+                            <div className="space-y-3">
+                                {state.transactions.map(tx => (
+                                    <Card key={tx.id} className="p-4 flex items-center justify-between hover:border-nu-100 transition-colors">
+                                        <div className="flex items-center space-x-4">
+                                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${tx.type === 'INCOME' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                                                <Icon name={tx.type === 'INCOME' ? 'TrendingUp' : 'TrendingDown'} className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <div className="font-semibold text-slate-800 text-sm">{tx.description}</div>
+                                                <div className="text-xs text-slate-400">{new Date(tx.competence_date).toLocaleDateString('pt-BR')} • {tx.type === 'INCOME' ? 'Receita' : 'Despesa'}</div>
+                                            </div>
+                                        </div>
+                                        <span className={`font-bold tabular-nums text-base ${tx.type === 'INCOME' ? 'text-emerald-600' : 'text-slate-900'}`}>
+                                            {tx.type === 'INCOME' ? '+' : '-'} {pv ? '••••' : formatMoney(tx.amount)}
+                                        </span>
+                                    </Card>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>
@@ -262,28 +345,171 @@
             const { state, addAccount } = useAuth();
             const [isAdding, setIsAdding] = useState(false);
             const [newAcc, setNewAcc] = useState({ name: '', initial_balance: 0 });
+
             return (
-                <div className="max-w-4xl mx-auto space-y-6 pb-24 animate-in fade-in">
-                    <div className="flex justify-between items-center px-2">
-                        <h1 className="text-2xl font-bold text-slate-900">Contas Bancárias</h1>
-                        <Button onClick={() => setIsAdding(!isAdding)} variant="outline"><Icon name="PlusCircle" className="w-5 h-5 mr-2"/> Nova Conta</Button>
+                <div className="space-y-6 animate-fade pb-20">
+                    <div className="flex justify-between items-center px-1">
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Contas Bancárias</h1>
+                            <p className="text-sm text-slate-500">Gerencie saldos e carteiras do casal.</p>
+                        </div>
+                        <Button onClick={() => setIsAdding(!isAdding)}><Icon name="PlusCircle" className="w-4 h-4 mr-2"/> Nova Conta</Button>
                     </div>
+
                     {isAdding && (
-                        <Card className="p-6">
+                        <Card className="p-6 border-nu-100 shadow-lg">
+                            <h3 className="font-bold text-slate-800 mb-4">Adicionar Nova Conta</h3>
                             <form onSubmit={e => { e.preventDefault(); addAccount(newAcc); setIsAdding(false); setNewAcc({name:'', initial_balance:0}); }} className="space-y-4">
-                                <div><Label>Nome do Banco / Carteira</Label><Input required value={newAcc.name} onChange={e => setNewAcc({...newAcc, name: e.target.value})} placeholder="Ex: Nubank" /></div>
+                                <div><Label>Nome do Banco / Instituição</Label><Input required value={newAcc.name} onChange={e => setNewAcc({...newAcc, name: e.target.value})} placeholder="Ex: Nubank, Itaú, Carteira" /></div>
                                 <MoneyInput label="Saldo Inicial" valueCents={newAcc.initial_balance} onChange={v => setNewAcc({...newAcc, initial_balance: v})} />
-                                <Button type="submit" className="w-full">Salvar Conta</Button>
+                                <div className="flex justify-end space-x-3 pt-2">
+                                    <Button type="button" variant="secondary" onClick={() => setIsAdding(false)}>Cancelar</Button>
+                                    <Button type="submit">Salvar Conta</Button>
+                                </div>
                             </form>
                         </Card>
                     )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {state.accounts.map(acc => (
-                            <Card key={acc.id} className="p-5 flex items-center justify-between">
-                                <span className="font-semibold text-slate-800">{acc.name}</span>
-                                <span className="font-bold text-slate-900">{state.privacyMode ? '••••' : formatMoney(acc.initial_balance)}</span>
+                            <Card key={acc.id} className="p-6 flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-12 h-12 bg-nu-50 text-nu-500 rounded-2xl flex items-center justify-center font-bold text-lg">
+                                        {acc.name.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-slate-800">{acc.name}</div>
+                                        <div className="text-xs text-slate-400">Conta Ativa</div>
+                                    </div>
+                                </div>
+                                <span className="font-extrabold text-slate-900 text-lg tabular-nums">{state.privacyMode ? '••••' : formatMoney(acc.initial_balance)}</span>
                             </Card>
                         ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const CardsView = () => {
+            const { state, addCard } = useAuth();
+            const [isAdding, setIsAdding] = useState(false);
+            const [newCard, setNewCard] = useState({ name: '', limit: 0, closing_day: 10, due_day: 17 });
+
+            return (
+                <div className="space-y-6 animate-fade pb-20">
+                    <div className="flex justify-between items-center px-1">
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Cartões de Crédito</h1>
+                            <p className="text-sm text-slate-500">Controle faturas e limites do casal.</p>
+                        </div>
+                        <Button onClick={() => setIsAdding(!isAdding)}><Icon name="PlusCircle" className="w-4 h-4 mr-2"/> Novo Cartão</Button>
+                    </div>
+
+                    {isAdding && (
+                        <Card className="p-6 border-nu-100 shadow-lg">
+                            <h3 className="font-bold text-slate-800 mb-4">Cadastrar Cartão</h3>
+                            <form onSubmit={e => { e.preventDefault(); addCard(newCard); setIsAdding(false); setNewCard({name:'', limit:0, closing_day:10, due_day:17}); }} className="space-y-4">
+                                <div><Label>Nome do Cartão</Label><Input required value={newCard.name} onChange={e => setNewCard({...newCard, name: e.target.value})} placeholder="Ex: Nubank Ultravioleta" /></div>
+                                <MoneyInput label="Limite Total" valueCents={newCard.limit} onChange={v => setNewCard({...newCard, limit: v})} />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div><Label>Dia de Fechamento</Label><Input type="number" value={newCard.closing_day} onChange={e => setNewCard({...newCard, closing_day: parseInt(e.target.value)})} /></div>
+                                    <div><Label>Dia de Vencimento</Label><Input type="number" value={newCard.due_day} onChange={e => setNewCard({...newCard, due_day: parseInt(e.target.value)})} /></div>
+                                </div>
+                                <div className="flex justify-end space-x-3 pt-2">
+                                    <Button type="button" variant="secondary" onClick={() => setIsAdding(false)}>Cancelar</Button>
+                                    <Button type="submit">Salvar Cartão</Button>
+                                </div>
+                            </form>
+                        </Card>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {state.cards.map(c => (
+                            <Card key={c.id} className="p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-lg space-y-6">
+                                <div className="flex justify-between items-center">
+                                    <span className="font-bold text-lg tracking-wide">{c.name}</span>
+                                    <Icon name="CreditCard" className="w-6 h-6 text-nu-400" />
+                                </div>
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <div className="text-xs text-slate-400">Limite Disponível</div>
+                                        <div className="text-xl font-extrabold tabular-nums">{state.privacyMode ? '••••' : formatMoney(c.limit)}</div>
+                                    </div>
+                                    <div className="text-right text-xs text-slate-400">
+                                        Fecha dia {c.closing_day} • Vence dia {c.due_day}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const PlanningView = () => {
+            const { state, setBudget } = useAuth();
+            const [amounts, setAmounts] = useState({});
+
+            const handleSave = (catId) => {
+                const val = amounts[catId] || 0;
+                setBudget(catId, val);
+            };
+
+            return (
+                <div className="space-y-6 animate-fade pb-20">
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Planejamento & Orçamento</h1>
+                        <p className="text-sm text-slate-500">Defina limites mensais por categoria de gastos.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {state.categories.filter(c => c.name !== 'Salário').map(cat => {
+                            const current = state.budgets.find(b => b.category_id === cat.id)?.limit_amount || 0;
+                            return (
+                                <Card key={cat.id} className="p-6 space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-bold text-slate-800 text-lg">{cat.name}</span>
+                                        <span className="text-xs font-semibold bg-nu-50 text-nu-600 px-3 py-1 rounded-full">Meta Mensal</span>
+                                    </div>
+                                    <MoneyInput valueCents={amounts[cat.id] !== undefined ? amounts[cat.id] : current} onChange={v => setAmounts({...amounts, [cat.id]: v})} />
+                                    <Button onClick={() => handleSave(cat.id)} className="w-full" variant="outline">Atualizar Limite</Button>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const SettingsView = () => {
+            const { state, addCategory, clearData } = useAuth();
+            const [catName, setCatName] = useState('');
+
+            return (
+                <div className="space-y-6 animate-fade pb-20">
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Ajustes do Sistema</h1>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card className="p-6 space-y-4">
+                            <h2 className="text-lg font-bold text-slate-800">Categorias</h2>
+                            <form onSubmit={e => { e.preventDefault(); if(catName) { addCategory(catName); setCatName(''); } }} className="flex gap-2">
+                                <Input placeholder="Nova Categoria" value={catName} onChange={e => setCatName(e.target.value)} required />
+                                <Button type="submit">Adicionar</Button>
+                            </form>
+                            <div className="flex flex-wrap gap-2 pt-2">
+                                {state.categories.map(c => (
+                                    <span key={c.id} className="px-3 py-1 bg-slate-100 text-slate-700 rounded-lg text-sm font-medium">{c.name}</span>
+                                ))}
+                            </div>
+                        </Card>
+
+                        <Card className="p-6 space-y-4 border-rose-100 bg-rose-50/20">
+                            <h2 className="text-lg font-bold text-rose-600">Zona de Perigo</h2>
+                            <p className="text-sm text-slate-500">Apague todos os dados e reinicie o banco de dados do casal.</p>
+                            <Button onClick={() => { if(window.confirm('Tem certeza? Isso apagará tudo.')) clearData(); }} className="bg-rose-600 hover:bg-rose-700 text-white w-full border-none">
+                                <Icon name="Trash2" className="w-4 h-4 mr-2"/> Limpar Todos os Dados
+                            </Button>
+                        </Card>
                     </div>
                 </div>
             );
@@ -292,35 +518,26 @@
         const TransactionModal = ({ isOpen, onClose }) => {
             const { state, addTransaction } = useAuth();
             const [tx, setTx] = useState({ description: '', amount: 0, type: 'EXPENSE', competence_date: new Date().toISOString().split('T')[0] });
+            
             if (!isOpen) return null;
+
             return (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <Card className="w-full max-w-md p-6 bg-white space-y-4">
+                <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade">
+                    <Card className="w-full max-w-md p-6 bg-white space-y-6 shadow-2xl">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-lg font-bold">Novo Lançamento</h2>
-                            <button onClick={onClose}><Icon name="X" /></button>
+                            <h2 className="text-xl font-bold text-slate-900">Novo Lançamento</h2>
+                            <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600"><Icon name="X" /></button>
                         </div>
                         <form onSubmit={e => { e.preventDefault(); addTransaction(tx); onClose(); setTx({ description: '', amount: 0, type: 'EXPENSE', competence_date: new Date().toISOString().split('T')[0] }); }} className="space-y-4">
-                            <div className="flex gap-2">
-                                <button type="button" onClick={() => setTx({...tx, type: 'EXPENSE'})} className={`flex-1 py-2 rounded-xl font-medium border ${tx.type === 'EXPENSE' ? 'bg-red-50 text-red-600 border-red-200' : 'border-slate-200'}`}>Despesa</button>
-                                <button type="button" onClick={() => setTx({...tx, type: 'INCOME'})} className={`flex-1 py-2 rounded-xl font-medium border ${tx.type === 'INCOME' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'border-slate-200'}`}>Receita</button>
+                            <div className="flex p-1 bg-slate-100 rounded-2xl">
+                                <button type="button" onClick={() => setTx({...tx, type: 'EXPENSE'})} className={`flex-1 py-2.5 rounded-xl font-bold text-sm transition-all ${tx.type === 'EXPENSE' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500'}`}>Despesa</button>
+                                <button type="button" onClick={() => setTx({...tx, type: 'INCOME'})} className={`flex-1 py-2.5 rounded-xl font-bold text-sm transition-all ${tx.type === 'INCOME' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'}`}>Receita</button>
                             </div>
-                            <div><Label>Descrição</Label><Input required value={tx.description} onChange={e => setTx({...tx, description: e.target.value})} placeholder="Ex: Supermercado" /></div>
+                            <div><Label>Descrição</Label><Input required value={tx.description} onChange={e => setTx({...tx, description: e.target.value})} placeholder="Ex: Supermercado Semanal" /></div>
                             <MoneyInput label="Valor" valueCents={tx.amount} onChange={v => setTx({...tx, amount: v})} />
-                            <Button type="submit" className="w-full">Adicionar</Button>
+                            <div><Label>Data do Lançamento</Label><Input type="date" value={tx.competence_date} onChange={e => setTx({...tx, competence_date: e.target.value})} /></div>
+                            <div className="pt-2"><Button type="submit" className="w-full">Adicionar Transação</Button></div>
                         </form>
-                    </Card>
-                </div>
-            );
-        };
-
-        const SettingsView = () => {
-            const { clearData } = useAuth();
-            return (
-                <div className="max-w-4xl mx-auto space-y-6 pb-24 animate-in fade-in">
-                    <h1 className="text-2xl font-bold px-2">Ajustes</h1>
-                    <Card className="p-6">
-                        <Button onClick={() => { if(window.confirm('Tem certeza que deseja apagar todos os dados?')) clearData(); }} className="bg-red-50 text-red-600 w-full hover:bg-red-100 shadow-none border-none">Apagar Todos os Dados</Button>
                     </Card>
                 </div>
             );
@@ -335,12 +552,16 @@
 
             if (!state.members.length) {
                 return (
-                    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
-                        <Card className="w-full max-w-sm p-8 space-y-6 shadow-md">
-                            <h1 className="text-2xl font-bold text-center text-[#820AD1]">Casa Finanças</h1>
+                    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-nu-500 via-nu-600 to-nu-700 p-4">
+                        <Card className="w-full max-w-md p-8 space-y-6 shadow-2xl border-none">
+                            <div className="text-center space-y-2">
+                                <div className="w-14 h-14 bg-nu-50 text-nu-500 rounded-3xl flex items-center justify-center mx-auto text-2xl font-black shadow-inner">CF</div>
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tight">Casa Finanças Pro</h1>
+                                <p className="text-sm text-slate-500">Gestão financeira inteligente para casais.</p>
+                            </div>
                             <form onSubmit={e => { e.preventDefault(); login(email); }} className="space-y-4">
-                                <div><Label>E-mail</Label><Input type="email" placeholder="seu@email.com" required value={email} onChange={e => setEmail(e.target.value)} /></div>
-                                <Button type="submit" className="w-full">Entrar</Button>
+                                <div><Label>Seu E-mail</Label><Input type="email" placeholder="jordan@casafinancas.com" required value={email} onChange={e => setEmail(e.target.value)} /></div>
+                                <Button type="submit" className="w-full">Entrar na Plataforma</Button>
                             </form>
                         </Card>
                     </div>
@@ -349,12 +570,15 @@
 
             if (!state.household) {
                 return (
-                    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
-                        <Card className="w-full max-w-sm p-8 space-y-6 shadow-md">
-                            <h1 className="text-2xl font-bold text-center text-[#820AD1]">Criar Casa</h1>
+                    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-nu-500 via-nu-600 to-nu-700 p-4">
+                        <Card className="w-full max-w-md p-8 space-y-6 shadow-2xl border-none">
+                            <div className="text-center space-y-2">
+                                <h1 className="text-2xl font-black text-slate-900 tracking-tight">Nomeie o seu Lar</h1>
+                                <p className="text-sm text-slate-500">Crie o espaço financeiro compartilhado do casal.</p>
+                            </div>
                             <form onSubmit={e => { e.preventDefault(); createHousehold(houseName); }} className="space-y-4">
-                                <div><Label>Nome da Casa</Label><Input placeholder="Ex: Casa do Casal" required value={houseName} onChange={e => setHouseName(e.target.value)} /></div>
-                                <Button type="submit" className="w-full">Começar</Button>
+                                <div><Label>Nome da Casa</Label><Input placeholder="Ex: Casa do Jordan & Areli" required value={houseName} onChange={e => setHouseName(e.target.value)} /></div>
+                                <Button type="submit" className="w-full">Começar a Usar</Button>
                             </form>
                         </Card>
                     </div>
@@ -364,38 +588,71 @@
             const tabs = [
                 { id: 'inicio', icon: 'Home', label: 'Início' },
                 { id: 'contas', icon: 'List', label: 'Contas' },
+                { id: 'cartoes', icon: 'CreditCard', label: 'Cartões' },
+                { id: 'planejamento', icon: 'Target', label: 'Orçamento' },
                 { id: 'ajustes', icon: 'Settings', label: 'Ajustes' },
             ];
 
             return (
                 <div className="flex h-screen bg-slate-50 flex-col md:flex-row overflow-hidden">
-                    <aside className="hidden md:flex w-64 bg-white border-r border-slate-100 flex-col p-4">
-                        <span className="font-bold text-lg mb-10 px-2 pt-2 text-[#820AD1]">{state.household.name}</span>
-                        <nav className="flex-1 space-y-2">
+                    <aside className="hidden md:flex w-72 bg-white border-r border-slate-100 flex-col p-6 shadow-sm">
+                        <div className="flex items-center space-x-3 mb-10 px-2">
+                            <div className="w-10 h-10 bg-nu-500 text-white rounded-2xl flex items-center justify-center font-black">CF</div>
+                            <div>
+                                <span className="font-extrabold text-slate-900 block leading-tight">{state.household.name}</span>
+                                <span className="text-xs text-nu-500 font-semibold">Conta Casal Ativa</span>
+                            </div>
+                        </div>
+                        <nav className="flex-1 space-y-1.5">
                             {tabs.map(item => (
-                                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl cursor-pointer ${activeTab === item.id ? 'bg-purple-50 text-[#820AD1]' : 'text-slate-600'}`}>
-                                    <Icon name={item.icon} /><span>{item.label}</span>
+                                <button key={item.id} onClick={() => setActiveTab(item.id)} className={`w-full flex items-center space-x-3.5 px-4 py-3.5 rounded-2xl font-semibold text-sm transition-all cursor-pointer ${activeTab === item.id ? 'bg-nu-50 text-nu-500 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>
+                                    <Icon name={item.icon} className="w-5 h-5" /><span>{item.label}</span>
                                 </button>
                             ))}
                         </nav>
+                        <div className="pt-4 border-t border-slate-100">
+                            <button onClick={logout} className="w-full flex items-center space-x-3 px-4 py-3 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-2xl font-medium text-sm transition-all">Sair da Conta</button>
+                        </div>
                     </aside>
+
                     <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
-                        <header className="bg-white px-6 py-4 border-b border-slate-100 flex justify-between items-center z-10 shadow-sm">
-                            <span className="font-bold text-slate-800">{state.household.name}</span>
-                            <div className="flex items-center space-x-4">
-                                <button onClick={togglePrivacy} className="p-2 hover:bg-slate-100 rounded-full cursor-pointer"><Icon name={state.privacyMode ? 'EyeOff' : 'Eye'} /></button>
-                                <button onClick={logout} className="text-sm font-medium text-slate-500 hover:text-slate-950 cursor-pointer">Sair</button>
+                        <header className="bg-white/80 backdrop-blur-md px-6 py-4 border-b border-slate-100 flex justify-between items-center z-10 sticky top-0 shadow-sm">
+                            <div className="flex items-center space-x-3">
+                                <span className="font-bold text-slate-800 text-lg md:hidden">{state.household.name}</span>
+                                <span className="hidden md:inline font-bold text-slate-700 text-sm">Visão Geral do Casal</span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <button onClick={togglePrivacy} className="p-2.5 hover:bg-slate-100 rounded-full text-slate-600 transition-colors cursor-pointer" title="Modo Privacidade">
+                                    <Icon name={state.privacyMode ? 'EyeOff' : 'Eye'} className="w-5 h-5" />
+                                </button>
+                                <div className="w-9 h-9 bg-nu-100 text-nu-600 font-extrabold rounded-full flex items-center justify-center text-sm shadow-inner">
+                                    {state.members[0]?.name.substring(0, 2).toUpperCase()}
+                                </div>
                             </div>
                         </header>
+
                         <div className="flex-1 overflow-y-auto p-4 md:p-8">
                             {activeTab === 'inicio' && <DashboardView />}
                             {activeTab === 'contas' && <AccountsView />}
+                            {activeTab === 'cartoes' && <CardsView />}
+                            {activeTab === 'planejamento' && <PlanningView />}
                             {activeTab === 'ajustes' && <SettingsView />}
                         </div>
-                        <button onClick={() => setIsTxOpen(true)} className="absolute bottom-6 right-6 bg-[#820AD1] hover:bg-[#6808a8] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl cursor-pointer transition-transform hover:scale-105 z-20">
-                            <Icon name="PlusCircle" className="w-8 h-8" />
+
+                        <button onClick={() => setIsTxOpen(true)} className="absolute bottom-6 right-6 bg-nu-500 hover:bg-nu-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl shadow-nu-500/40 cursor-pointer transition-all hover:scale-105 active:scale-95 z-20">
+                            <Icon name="PlusCircle" className="w-9 h-9" />
                         </button>
                     </main>
+
+                    <div className="md:hidden flex bg-white border-t border-slate-100 h-16 px-4 justify-around items-center shrink-0">
+                        {tabs.map(item => (
+                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex flex-col items-center justify-center flex-1 h-full space-y-1 ${activeTab === item.id ? 'text-nu-500 font-bold' : 'text-slate-400 font-medium'}`}>
+                                <Icon name={item.icon} className="w-5 h-5" />
+                                <span className="text-[10px]">{item.label}</span>
+                            </button>
+                        ))}
+                    </div>
+
                     <TransactionModal isOpen={isTxOpen} onClose={() => setIsTxOpen(false)} />
                 </div>
             );
